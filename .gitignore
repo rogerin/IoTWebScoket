@@ -1,0 +1,29 @@
+# Arquivos de Log
+*.log
+
+# Diretório de dependências de Node.js
+/node_modules/
+
+# Ambientes Virtuais de Python
+env/
+venv/
+pyvenv.cfg
+
+# Arquivos de configuração de IDEs/Editores
+.vscode/
+.idea/
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
+
+# Diretórios de build e compilação
+/build/
+/dist/
+
+# Arquivos de cache
+*.pyc
+/__pycache__/
+
+# Outros arquivos e diretórios a serem ignorados
+# Adicione aqui conforme necessário

@@ -1,5 +1,10 @@
 Este projeto é um servidor WebSocket implementado em Node.js, projetado para se comunicar com um dispositivo ESP32. O servidor é iniciado na porta 3000, aguardando conexões. Aqui está uma descrição detalhada do funcionamento e propósito do projeto:
 
+
+<p aling="center">
+  <img src="/assets/imgs/img-socket.png" width="200" />
+ 
+</p>
 ---
 
 **Descrição do Projeto de Servidor WebSocket para ESP32:**
