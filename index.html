@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Stream</title>
+</head>
+<body>
+    <button id="start">Start Streaming</button>
+
+    <script>
+        document.getElementById('start').addEventListener('click', () => {
+            const ws = new WebSocket('ws://11d1-187-21-12-138.ngrok-free.app:80');
+            ws.binaryType = 'arraybuffer';
+
+            ws.onopen = () => {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        const audioContext = new AudioContext();
+                        const source = audioContext.createMediaStreamSource(stream);
+                        const processor = audioContext.createScriptProcessor(1024, 1, 1);
+                        
+                        source.connect(processor);
+                        processor.connect(audioContext.destination);
+
+                        processor.onaudioprocess = event => {
+                            const inputBuffer = event.inputBuffer.getChannelData(0);
+                            const outputBuffer = new Int16Array(inputBuffer.length);
+                            for (let i = 0; i < inputBuffer.length; i++) {
+                                outputBuffer[i] = 32767 * Math.min(1, inputBuffer[i]);
+                            }
+                            ws.send(outputBuffer.buffer);
+                        };
+                    })
+                    .catch(err => {
+                        console.error('Error accessing the microphone:', err);
+                    });
+            };
+
+            ws.onerror = error => {
+                console.error('WebSocket Error:', error);
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Receiver</title>
+</head>
+<body>
+    <h1>Audio Receiver 2</h1>
+    
+    <script>
+        const audioContext = new AudioContext();
+        const bufferSize = 1024;
+        const audioProcessingNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+        audioProcessingNode.onaudioprocess = event => {
+            if (audioDataQueue.length > 0) {
+                event.outputBuffer.getChannelData(0).set(audioDataQueue.shift());
+            }
+        };
+
+        let audioDataQueue = [];
+
+        const ws = new WebSocket('ws://5a00-187-21-12-138.ngrok-free.app:80',);
+        ws.binaryType = 'arraybuffer';
+        ws.
+
+        ws.onmessage = event => {
+            const arrayBuffer = new Int16Array(event.data);
+            const float32Array = new Float32Array(arrayBuffer.length);
+            //console.log(event)
+            for (let i = 0; i < arrayBuffer.length; i++) {
+                float32Array[i] = arrayBuffer[i] / 32767;
+            }
+
+            audioDataQueue.push(float32Array);
+
+            if (audioDataQueue.length > 10) {
+                audioDataQueue = audioDataQueue.slice(audioDataQueue.length - 10);
+            }
+
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        };
+
+        audioProcessingNode.connect(audioContext.destination);
+    </script>
+</body>
+</html>
